@@ -1,0 +1,3 @@
+- gerar o executavel 'tolua5lua' (make -C tolua -f VisMakefile lib app -s)
+- criar um link em src/tolua/src para o executavel chamado 'tolua5'
+- rodar de src/tolua/src/bin: ./regenerate_binding

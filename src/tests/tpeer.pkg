@@ -1,0 +1,10 @@
+$#include "tpeer.h"
+
+class Point
+{
+  Point (double x, double y);
+  double X () const;
+  double Y () const;
+  tolua_multret gets (lua_State* L) const;
+};
+
