@@ -4,8 +4,7 @@ TOLUA=../..
 
 include $(TOLUA)/config
 
-OBJS=	\
-	tolua_event.o \
+OBJS= tolua_event.o \
 	tolua_is.o \
 	tolua_map.o \
 	tolua_push.o \
@@ -20,8 +19,4 @@ $T: $(OBJS)
 	$(RANLIB) $@
 
 clean:
-	rm -f $(OBJS) 
-	
-klean:
-	rm -f $T
-
+	rm -f $(OBJS)

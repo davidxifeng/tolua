@@ -1,7 +1,7 @@
 # makefile for tolua executable
 
 TOLUA=../..
-TOLUAEXE = tolua_lua
+TOLUAEXE = tolua
 
 include $(TOLUA)/config
 
