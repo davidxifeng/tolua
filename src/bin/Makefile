@@ -11,7 +11,7 @@ T= $(TOLUA)/bin/tolua
 all: $(T)
 
 $(T): $(OBJS_D)
-	$(CC) -o $@ $(OBJS_D) $(LIB) -ltolua -llua -lm
+	$(CC) -o $@ $(OBJS_D) $(LIB) -ltolua -llua -lm -ldl
 
 tolua.o: tolua.c
 	$(CC) -c $(INC) -o $@ $<

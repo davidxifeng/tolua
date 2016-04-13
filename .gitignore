@@ -1,5 +1,8 @@
 /bin
 
+lua
+luac
+
 /src/tests/tarray
 /src/tests/tarraybind.c
 /src/tests/tclass

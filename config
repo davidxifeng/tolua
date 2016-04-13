@@ -13,9 +13,9 @@ RANLIB= ranlib
 AR= ar rcu
 
 # set lua path
-LUA=/usr/local
-LUAINC=$(LUA)/include
-LUALIB=$(LUA)/lib
+LUA= $(TOLUA)/lua-5.3.2
+LUAINC=$(LUA)
+LUALIB=$(LUA)
 
 # == END OF USER SETTINGS. DO NOT CHANGE ANYTHING BELOW THIS LINE ============
 
