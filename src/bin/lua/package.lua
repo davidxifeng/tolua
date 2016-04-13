@@ -202,21 +202,21 @@ end
 -- Parse C header file with tolua directives
 -- *** Thanks to Ariel Manzur for fixing bugs in nested directives ***
 function extract_code(fn,s)
-	local code = '\n$#include "'..fn..'"\n'
-	s= "\n" .. s .. "\n" -- add blank lines as sentinels
-	local _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n")
-	while e do
-		t = strlower(t)
-		if t == "begin" then
-			_,e,c = strfind(s,"(.-)\n[^\n]*[Tt][Oo][Ll][Uu][Aa]_[Ee][Nn][Dd][^\n]*\n",e)
-			if not e then
-			 tolua_error("Unbalanced 'tolua_begin' directive in header file")
-			end
-		end
-		code = code .. c .. "\n"
-	 _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n",e)
-	end
-	return code
+ local code = '\n$#include "'..fn..'"\n'
+ s = "\n" .. s .. "\n" -- add blank lines as sentinels
+ local _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n")
+ while e do
+  t = strlower(t)
+  if t == "begin" then
+   _,e,c = strfind(s,"(.-)\n[^\n]*[Tt][Oo][Ll][Uu][Aa]_[Ee][Nn][Dd][^\n]*\n",e)
+   if not e then
+    tolua_error("Unbalanced 'tolua_begin' directive in header file")
+   end
+  end
+  code = code .. c .. "\n"
+  _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n",e)
+ end
+ return code
 end
 
 -- Constructor
@@ -225,21 +225,27 @@ function Package (name,fn)
  local ext = "pkg"
 
  -- open input file, if any
+ local input_file
  if fn then
-  local st, msg = readfrom(flags.f)
-  if not st then
+  input_file, msg = io.open(fn, "r")
+
+  if not input_file then
    error('#'..msg)
   end
-		local _; _, _, ext = strfind(fn,".*%.(.*)$")
+  ext = fn:match(".*%.(.*)$")
+ else
+  input_file = io.stdin
  end
- local code = "\n" .. read('*a')
-	if ext == 'h' or ext == 'hpp' then
-	 code = extract_code(fn,code)
-	end
+
+ local code = "\n" .. input_file:read('*a')
+
+ if ext == 'h' or ext == 'hpp' then
+  code = extract_code(fn,code)
+ end
 
  -- close file
- if fn then
-  readfrom()
+ if input_file then
+  input_file:close()
  end
 
  -- deal with renaming directive
@@ -248,25 +254,24 @@ function Package (name,fn)
  -- deal with include directive
  local nsubst
  repeat
-  code,nsubst = gsub(code,'\n%s*%$(.)file%s*"(.-)"%s*\n',
-		                   function (kind,fn)
-                      local _, _, ext = strfind(fn,".*%.(.*)$")
-                      local fp,msg = openfile(fn,'r')
-                      if not fp then
-                       error('#'..msg..': '..fn)
-                      end
-                      local s = read(fp,'*a')
-                      closefile(fp)
-																						if kind == 'c' or kind == 'h' then
-									              return extract_code(fn,s)
-																						elseif kind == 'p' then
-                       return "\n\n" .. s
-																						elseif kind == 'l' then
-																						 return "\n$[\n" .. s .. "\n$]\n"
-																						else
-																						 error('#Invalid include directive (use $cfile, $pfile or $lfile)')
-                      end
-																					end)
+  code,nsubst = gsub(code,'\n%s*%$(.)file%s*"(.-)"%s*\n', function (kind,fn)
+   local _, _, ext = strfind(fn,".*%.(.*)$")
+   local fp,msg = io.open(fn,'r')
+   if not fp then
+    error('#'..msg..': '..fn)
+   end
+   local s = fp:read('*a')
+   fp:close()
+   if kind == 'c' or kind == 'h' then
+    return extract_code(fn,s)
+   elseif kind == 'p' then
+    return "\n\n" .. s
+   elseif kind == 'l' then
+    return "\n$[\n" .. s .. "\n$]\n"
+   else
+    error('#Invalid include directive (use $cfile, $pfile or $lfile)')
+   end
+ end)
  until nsubst==0
 
  local t = _Package(_Container{name=name, code=code})
