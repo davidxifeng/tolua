@@ -6,10 +6,10 @@
 ** $Id: tolua.c,v 1.4 2009/11/24 16:45:12 fabraham Exp $
 */
 
-/* This code is free software; you can redistribute it and/or modify it. 
-** The software provided hereunder is on an "as is" basis, and 
+/* This code is free software; you can redistribute it and/or modify it.
+** The software provided hereunder is on an "as is" basis, and
 ** the author has no obligation to provide maintenance, support, updates,
-** enhancements, or modifications. 
+** enhancements, or modifications.
 */
 
 #include "tolua.h"
@@ -37,7 +37,7 @@ static void help (void)
          "  -P       : parse and print structure information (for debug).\n"
          "  -h       : print this message.\n"
          "Should the input file be omitted, stdin is assumed;\n"
-         "in that case, the package name must be explicitly set.\n\n" 
+         "in that case, the package name must be explicitly set.\n\n"
         );
 }
 
@@ -104,27 +104,18 @@ int main (int argc, char* argv[])
   lua_pop(L,1);
  }
 
-#ifndef LUA_SOURCE
- {
-  int tolua_tolua_open (lua_State* L);
-  tolua_tolua_open(L);
+ char* p;
+ char  path[BUFSIZ] = "";
+ strcpy(path,argv[0]);
+ p = strrchr(path,'/');
+ if (p==NULL) p = strrchr(path,'\\');
+ p = (p==NULL) ? path : p+1;
+ sprintf(p,"%s","../src/bin/lua/");
+ lua_pushstring(L,path); lua_setglobal(L,"path");
+ strcat(path,"all.lua");
+ if (luaL_dofile(L,path)) {
+  printf("error loading all.lua: %s\n",lua_tostring(L,-1));
+  return 1;
  }
-#else
- {
-  char* p;
-  char  path[BUFSIZ] = "";
-  strcpy(path,argv[0]);
-  p = strrchr(path,'/');
-  if (p==NULL) p = strrchr(path,'\\');
-  p = (p==NULL) ? path : p+1;
-  sprintf(p,"%s","../src/bin/lua/");
-  lua_pushstring(L,path); lua_setglobal(L,"path");
-  strcat(path,"all.lua");
-  if (luaL_dofile(L,path)) {
-   printf("error loading all.lua: %s\n",lua_tostring(L,-1));
-   return 1;
-  }
- }
-#endif
  return 0;
 }

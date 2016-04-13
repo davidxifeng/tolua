@@ -1,1 +1,0 @@
-../tolua5lua -o toluabind.c tolua.pkg

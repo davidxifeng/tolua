@@ -5,17 +5,9 @@
 # you need an ANSI C compiler. gcc is a popular one.
 CC= gcc
 CCPP = g++
-WARN= -ansi -Wall -g
+WARN= -Wall -g
 
-# on SGI's, cc is ANSI.
-#CC= cc
-#WARN= -ansi -fullwarn
-
-# if your system doesn't have (or need) ranlib, change "ranlib" to "true".
-# on some systems, "ar s" does it.
 RANLIB= ranlib
-#RANLIB= ar s
-#RANLIB= true
 
 # this should work in all unix systems.
 AR= ar rcu
@@ -30,7 +22,5 @@ LUALIB=$(LUA)/lib
 INC= -I$(TOLUA)/include -I$(LUAINC) 
 LIB= -L$(TOLUA)/lib -L$(LUALIB)
 
-#CFLAGS= -O2 $(WARN) $(INC)
-#CPPFLAGS=  -O2 $(WARN) $(INC)
 CFLAGS= -g $(WARN) $(INC)
 CPPFLAGS=  -g $(WARN) $(INC)

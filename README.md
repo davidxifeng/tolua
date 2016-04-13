@@ -1,5 +1,4 @@
 This is  tolua-5.2.4
-This is  tolua-5.1
 
 * What is tolua?
   tolua is a tool that greatly simplifies the integration of C/C++ code 
