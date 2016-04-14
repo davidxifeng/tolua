@@ -3,6 +3,8 @@
 lua
 luac
 
+/tests/test
+
 /src/tests/tarray
 /src/tests/tarraybind.c
 /src/tests/tclass
