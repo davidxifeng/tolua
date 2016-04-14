@@ -36,9 +36,9 @@ setmetatable(classFunction,classFeature)
 function classFunction:decltype ()
  self.type = typevar(self.type)
  if strfind(self.mod,'const') then
-	 self.type = 'const '..self.type
-	 self.mod = gsub(self.mod,'const%s*','')
-	end
+   self.type = 'const '..self.type
+   self.mod = gsub(self.mod,'const%s*','')
+  end
  local i=1
  while self.args[i] do
   self.args[i]:decltype()
@@ -67,38 +67,39 @@ function classFunction:supcode ()
   end
 
  -- check types
-	if overload < 0 then
-	 output('#ifndef TOLUA_RELEASE\n')
-	end
-	output(' tolua_Error tolua_err;')
+ if check_type then
+  if overload < 0 then
+   output('#ifndef TOLUA_RELEASE\n')
+  end
+  output(' tolua_Error tolua_err;')
  output(' if (\n')
  -- check self
  local narg
  if class then narg=2 else narg=1 end
  if class then
-	 local func = 'tolua_isusertype'
-		local type = self.parent.type
-		if self.const ~= '' then
-		 type = self.const .. " " .. type
-		end
-	 if self.name=='new' or static~=nil then
-		 func = 'tolua_isusertable'
-			type = self.parent.type
-		end
-		output('     !'..func..'(tolua_S,1,"'..type..'",0,&tolua_err) || \n') 
+   local func = 'tolua_isusertype'
+    local type = self.parent.type
+    if self.const ~= '' then
+     type = self.const .. " " .. type
+    end
+   if self.name=='new' or static~=nil then
+     func = 'tolua_isusertable'
+      type = self.parent.type
+    end
+    output('     !'..func..'(tolua_S,1,"'..type..'",0,&tolua_err) || \n') 
  end
  -- check args
  local vararg = false
  if self.args[1].type ~= 'void' then
   local i=1
   while self.args[i] and self.args[i].type ~= "..." do
-		 local btype = isbasic(self.args[i].type) 
-			if btype ~= 'state' then
+     local btype = isbasic(self.args[i].type) 
+      if btype ~= 'state' then
     output('     !'..self.args[i]:outchecktype(narg,false)..' || \n')
    end
-			if btype ~= 'state' then
+      if btype ~= 'state' then
         narg = narg+1
-			end
+      end
    i = i+1
   end
   if self.args[i] then
@@ -115,10 +116,11 @@ function classFunction:supcode ()
  output('  goto tolua_lerror;')
 
  output(' else\n')
-	if overload < 0 then
-	 output('#endif\n')
-	end
-	output(' {')
+  if overload < 0 then
+   output('#endif\n')
+  end
+ end
+  output(' {')
  
  -- declare self, if the case
  local narg
@@ -135,18 +137,20 @@ function classFunction:supcode ()
   local i=1
   while self.args[i] and self.args[i].type ~= "..." do
    self.args[i]:declare(narg)
-			if isbasic(self.args[i].type) ~= "state" then
+      if isbasic(self.args[i].type) ~= "state" then
         narg = narg+1
-			end
+      end
    i = i+1
   end
  end
 
  -- check self
+ if check_type then
  if class and self.name~='new' and static==nil then 
-	 output('#ifndef TOLUA_RELEASE\n')
+  output('#ifndef TOLUA_RELEASE\n')
   output('  if (!self) tolua_error(tolua_S,"invalid \'self\' in function \''..self.name..'\'",NULL);');
-	 output('#endif\n')
+  output('#endif\n')
+ end
  end
 
  -- get array element values
@@ -154,7 +158,7 @@ function classFunction:supcode ()
  if self.args[1].type ~= 'void' then
   local i=1
   while self.args[i] and self.args[i].type ~= "..." do
-	 if isbasic(self.args[i].type) ~= "state" then
+   if isbasic(self.args[i].type) ~= "state" then
      self.args[i]:getarray(narg)
      narg = narg+1
    end
@@ -208,9 +212,9 @@ function classFunction:supcode ()
      
   if class and self.name == 'operator[]' then
    output('-1);')
-		else
+    else
    output(');')
-		end
+    end
 
   -- return values
   if self.type ~= '' and self.type ~= 'void' and self.type ~= 'tolua_multret' then
@@ -225,15 +229,15 @@ function classFunction:supcode ()
       output('   tolua_push'..t..'(tolua_S,(',ct,')tolua_ret);')
      end
    else
-		t = self.type
+    t = self.type
     if self.ptr == '' then
      output('   {')
      output('#ifdef __cplusplus\n')
      output('    void* tolua_obj = new',t,'(tolua_ret);') 
-	    output('    tolua_pushusertype(tolua_S,tolua_clone(tolua_S,tolua_obj,'.. (_collect[t] or 'NULL') ..'),"',t,'");')
+      output('    tolua_pushusertype(tolua_S,tolua_clone(tolua_S,tolua_obj,'.. (_collect[t] or 'NULL') ..'),"',t,'");')
      output('#else\n')
      output('    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(',t,'));')
-	    output('    tolua_pushusertype(tolua_S,tolua_clone(tolua_S,tolua_obj,NULL),"',t,'");')
+      output('    tolua_pushusertype(tolua_S,tolua_clone(tolua_S,tolua_obj,NULL),"',t,'");')
      output('#endif\n')
      output('   }')
     elseif self.ptr == '&' then
@@ -286,13 +290,15 @@ function classFunction:supcode ()
  end
 
  -- call overloaded function or generate error
-	if overload < 0 then
-	 output('#ifndef TOLUA_RELEASE\n')
-  output('tolua_lerror:\n')
-  output(' tolua_error(tolua_S,"#ferror in function \''..self.lname..'\'.",&tolua_err);')
-  output(' return 0;')
-  output('#endif\n')
-	else
+ if overload < 0 then
+   if check_type then
+    output('#ifndef TOLUA_RELEASE\n')
+    output('tolua_lerror:\n')
+    output(' tolua_error(tolua_S,"#ferror in function \''..self.lname..'\'.",&tolua_err);')
+    output(' return 0;')
+    output('#endif\n')
+  end
+ else
   output('tolua_lerror:\n')
   output(' return '..strsub(self.cname,1,-3)..format("%02d",overload)..'(tolua_S);')
  end
@@ -329,18 +335,18 @@ end
 
 -- check if it returns a object by value
 function classFunction:requirecollection (t)
-	local r = false
-	if self.type ~= '' and not isbasic(self.type) and self.ptr=='' then
-	 local type = gsub(self.type,"%s*const%s*","")
-	 t[type] = "tolua_collect_" .. gsub(type,"::","_")
-	 r = true
-	end
-	local i=1
-	while self.args[i] do
-		r = self.args[i]:requirecollection(t) or r
-		i = i+1
-	end
-	return r
+  local r = false
+  if self.type ~= '' and not isbasic(self.type) and self.ptr=='' then
+   local type = gsub(self.type,"%s*const%s*","")
+   t[type] = "tolua_collect_" .. gsub(type,"::","_")
+   r = true
+  end
+  local i=1
+  while self.args[i] do
+    r = self.args[i]:requirecollection(t) or r
+    i = i+1
+  end
+  return r
 end
 
 -- determine lua function name overload
@@ -364,7 +370,7 @@ function _Function (t)
    t.name = 'new'
    t.lname = 'new'
    if string.find(t.type,"tolua_own") then
-     t.mod = "tolua_own"
+    t.mod = "tolua_own"
    end
    t.type = t.parent.name
    t.ptr = '*'
@@ -399,4 +405,4 @@ function Function (d,a,c)
  return _Function(f)
 end
 
-
+-- vim: tabstop=2 shiftwidth=2 softtabstop=2

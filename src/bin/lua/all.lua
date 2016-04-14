@@ -1,3 +1,6 @@
+
+check_type = false
+
 dofile(path.."compat.lua")
 dofile(path.."basic.lua")
 dofile(path.."feature.lua")
