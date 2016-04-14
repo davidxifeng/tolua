@@ -1,20 +1,7 @@
--- tolua: array class
--- Written by Waldemar Celes
--- TeCGraf/PUC-Rio
--- Jul 1999
--- $Id: array.lua,v 1.4 2011/01/13 13:43:45 fabraham Exp $
-
--- This code is free software; you can redistribute it and/or modify it.
--- The software provided hereunder is on an "as is" basis, and
--- the author has no obligation to provide maintenance, support, updates,
--- enhancements, or modifications. 
-
-
 -- Array class
 -- Represents a extern array variable or a public member of a class.
 -- Stores all fields present in a declaration.
-classArray = {
-}
+classArray = {}
 classArray.__index = classArray
 setmetatable(classArray,classDeclaration)
 

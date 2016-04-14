@@ -24,6 +24,6 @@ dofile(path.."doit.lua")
 
 local err,msg = pcall(doit)
 if not err then
- local _,_,label,msg = strfind(msg,"(.-:.-:%s*)(.*)")
- tolua_error(msg,label)
+  local _,_,label,msg = strfind(msg,"(.-:.-:%s*)(.*)")
+  tolua_error(msg,label)
 end

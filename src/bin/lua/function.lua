@@ -1,16 +1,3 @@
--- tolua: function class
--- Written by Waldemar Celes
--- TeCGraf/PUC-Rio
--- Jul 1998
--- $Id: function.lua,v 1.4 2009/11/24 16:45:14 fabraham Exp $
-
--- This code is free software; you can redistribute it and/or modify it.
--- The software provided hereunder is on an "as is" basis, and
--- the author has no obligation to provide maintenance, support, updates,
--- enhancements, or modifications. 
-
-
-
 -- Function class
 -- Represents a function or a class method.
 -- The following fields are stored:
@@ -22,11 +9,11 @@
 --  args  = list of argument declarations
 --  const = if it is a method receiving a const "this".
 classFunction = {
- mod = '',
- type = '',
- ptr = '',
- name = '',
- args = {n=0},
+ mod   = '',
+ type  = '',
+ ptr   = '',
+ name  = '',
+ args  = {n = 0},
  const = '',
 }
 classFunction.__index = classFunction

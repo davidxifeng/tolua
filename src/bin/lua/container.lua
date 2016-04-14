@@ -1,14 +1,3 @@
--- tolua: container abstract class
--- Written by Waldemar Celes
--- TeCGraf/PUC-Rio
--- Jul 1998
--- $Id: container.lua,v 1.3 2009/11/24 16:45:13 fabraham Exp $
-
--- This code is free software; you can redistribute it and/or modify it.
--- The software provided hereunder is on an "as is" basis, and
--- the author has no obligation to provide maintenance, support, updates,
--- enhancements, or modifications. 
-
 -- table to store namespaced typedefs/enums in global scope
 global_typedefs = {}
 global_enums = {}
