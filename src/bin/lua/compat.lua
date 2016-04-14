@@ -1,34 +1,3 @@
--------------------------------------------------------------------
--- Real globals
--- _ALERT
--- _ERRORMESSAGE
--- _VERSION
--- _G
--- assert
--- error
--- metatable
--- next
--- print
--- require
--- tonumber
--- tostring
--- type
-
--------------------------------------------------------------------
--- collectgarbage
--- gcinfo
-
--- globals
-
--- call   -> protect(f, err)
-
--- rawget
--- rawset
-
--- getargs = Main.getargs ??
-
-rawtype = type
-
 function do_ (f, err)
   if not f then print(err); return end
   local a,b = pcall(f)
@@ -55,75 +24,55 @@ end
 getn = function(t)
   return #t
 end
-tinsert = tab.insert
-tremove = tab.remove
-sort = tab.sort
-
--------------------------------------------------------------------
--- Debug library
-local dbg = debug
-getinfo = dbg.getinfo
-getlocal = dbg.getlocal
-setcallhook = function () error"`setcallhook' is deprecated" end
-setlinehook = function () error"`setlinehook' is deprecated" end
-setlocal = dbg.setlocal
 
 -------------------------------------------------------------------
 -- math library
 local math = math
-abs = math.abs
-acos = function (x) return math.deg(math.acos(x)) end
-asin = function (x) return math.deg(math.asin(x)) end
-atan = function (x) return math.deg(math.atan(x)) end
-atan2 = function (x,y) return math.deg(math.atan2(x,y)) end
-ceil = math.ceil
-cos = function (x) return math.cos(math.rad(x)) end
-deg = math.deg
-exp = math.exp
-floor = math.floor
-frexp = math.frexp
-ldexp = math.ldexp
-log = math.log
-log10 = math.log10
-max = math.max
-min = math.min
-mod = math.mod
-PI = math.pi
---??? pow = math.pow  
-rad = math.rad
-random = math.random
+abs        = math.abs
+acos       = function (x) return math.deg(math.acos(x)) end
+asin       = function (x) return math.deg(math.asin(x)) end
+atan       = function (x) return math.deg(math.atan(x)) end
+atan2      = function (x,y) return math.deg(math.atan2(x,y)) end
+ceil       = math.ceil
+cos        = function (x) return math.cos(math.rad(x)) end
+deg        = math.deg
+exp        = math.exp
+floor      = math.floor
+frexp      = math.frexp
+ldexp      = math.ldexp
+log        = math.log
+log10      = math.log10
+max        = math.max
+min        = math.min
+mod        = math.mod
+PI         = math.pi
+rad        = math.rad
+random     = math.random
 randomseed = math.randomseed
-sin = function (x) return math.sin(math.rad(x)) end
-sqrt = math.sqrt
-tan = function (x) return math.tan(math.rad(x)) end
+sin        = function (x) return math.sin(math.rad(x)) end
+sqrt       = math.sqrt
+tan        = function (x) return math.tan(math.rad(x)) end
 
 -------------------------------------------------------------------
 -- string library
-local str = string
-strbyte = str.byte
-strchar = str.char
-strfind = str.find
-format = str.format
-gsub = str.gsub
-strlen = str.len
-strlower = str.lower
-strrep = str.rep
-strsub = str.sub
-strupper = str.upper
+local string = string
+strbyte   = string.byte
+strchar   = string.char
+strfind   = string.find
+format    = string.format
+gsub      = string.gsub
+strlen    = string.len
+strlower  = string.lower
+strrep    = string.rep
+strsub    = string.sub
+strupper  = string.upper
 
 -------------------------------------------------------------------
 -- os library
-clock = os.clock
-date = os.date
-difftime = os.difftime
-execute = os.execute --?
-exit = os.exit
-getenv = os.getenv
+date   = os.date
 remove = os.remove
 rename = os.rename
-setlocale = os.setlocale
-time = os.time
-tmpname = os.tmpname
+time   = os.time
 
 
 -------------------------------------------------------------------
@@ -155,7 +104,7 @@ end
 function write (...)
   local f = _OUTPUT
   local arg = {...}
-  if rawtype(arg[1]) == 'userdata' then
+  if type(arg[1]) == 'userdata' then
     f = tab.remove(arg, 1)
   end
   return f:write(table.unpack(arg))
