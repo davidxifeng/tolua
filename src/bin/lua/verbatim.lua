@@ -1,4 +1,4 @@
--- Verbatim class
+--- Verbatim class
 -- Represents a line translated directed to the binding file.
 -- The following filds are stored:
 --   line = line text

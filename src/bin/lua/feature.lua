@@ -1,4 +1,4 @@
--- Feature class
+--- Feature class
 -- Represents the base class of all mapped feature.
 classFeature = {
 }

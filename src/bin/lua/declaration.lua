@@ -1,4 +1,4 @@
--- Declaration class
+--- Declaration class
 -- Represents variable, function, or argument declaration.
 -- Stores the following fields:
 --  mod  = type modifiers

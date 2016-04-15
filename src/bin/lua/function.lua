@@ -1,4 +1,4 @@
--- Function class
+--- Function class
 -- Represents a function or a class method.
 -- The following fields are stored:
 --  mod  = type modifiers

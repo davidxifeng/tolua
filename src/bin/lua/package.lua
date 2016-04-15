@@ -1,4 +1,4 @@
--- Package class
+--- Package class
 -- Represents the whole package being bound.
 -- The following fields are stored:
 --  {i} = list of objects in the package.
@@ -171,11 +171,6 @@ function classPackage:header ()
   end
 end
 
--- Internal constructor
-function _Package (self)
-  return setmetatable(self,classPackage)
-end
-
 -- Parse C header file with tolua directives
 -- *** Thanks to Ariel Manzur for fixing bugs in nested directives ***
 function extract_code(fn,s)
@@ -196,8 +191,9 @@ function extract_code(fn,s)
   return code
 end
 
--- Constructor
--- Expects the package name, the file extension, and the file text.
+--- parse a package file
+-- @string name package name
+-- @string[opt] fn input pkg file name, or stdin
 function Package (name,fn)
   local ext = "pkg"
 
@@ -207,7 +203,7 @@ function Package (name,fn)
     input_file, msg = io.open(fn, "r")
 
     if not input_file then
-    error('#'..msg)
+      error('#'..msg)
     end
     ext = fn:match(".*%.(.*)$")
   else
@@ -229,35 +225,34 @@ function Package (name,fn)
   code = gsub(code,'%s*%$renaming%s*(.-)%s*\n', function (r) appendrenaming(r) return "\n" end)
 
   -- deal with include directive
-  local nsubst
   repeat
+    local nsubst
     code,nsubst = gsub(code,'\n%s*%$(.)file%s*"(.-)"%s*\n', function (kind,fn)
-    local _, _, ext = strfind(fn,".*%.(.*)$")
-    local fp,msg = io.open(fn,'r')
-    if not fp then
-      error('#'..msg..': '..fn)
-    end
-    local s = fp:read('*a')
-    fp:close()
-    if kind == 'c' or kind == 'h' then
-      return extract_code(fn,s)
-    elseif kind == 'p' then
-      return "\n\n" .. s
-    elseif kind == 'l' then
-      return "\n$[\n" .. s .. "\n$]\n"
-    else
-      error('#Invalid include directive (use $cfile, $pfile or $lfile)')
-    end
-  end)
+      local _, _, ext = strfind(fn,".*%.(.*)$")
+      local fp,msg = io.open(fn,'r')
+      if not fp then
+        error('#'..msg..': '..fn)
+      end
+      local s = fp:read('*a')
+      fp:close()
+      if kind == 'c' or kind == 'h' then
+        return extract_code(fn,s)
+      elseif kind == 'p' then
+        return "\n\n" .. s
+      elseif kind == 'l' then
+        return "\n$[\n" .. s .. "\n$]\n"
+      else
+        error('#Invalid include directive (use $cfile, $pfile or $lfile)')
+      end
+    end)
   until nsubst==0
 
-  local t = _Package(_Container{name=name, code=code})
+  local t = setmetatable(_Container {name=name, code=code}, classPackage)
   push(t)
   t:preprocess()
   t:parse(t.code)
   pop()
   return t
 end
-
 
 -- vim: tabstop=2 shiftwidth=2 softtabstop=2

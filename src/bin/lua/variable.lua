@@ -1,4 +1,4 @@
--- Variable class
+--- Variable class
 -- Represents a extern variable or a public member of a class.
 -- Stores all fields present in a declaration.
 classVariable = {

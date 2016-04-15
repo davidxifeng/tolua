@@ -1,4 +1,4 @@
--- Namespace class
+--- Namespace class
 -- Represents a namesapce definition.
 -- Stores the following fields:
 --    name = class name

@@ -1,4 +1,4 @@
--- Module class
+--- Module class
 -- Represents module.
 -- The following fields are stored:
 --    {i} = list of objects in the module.

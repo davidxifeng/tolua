@@ -1,4 +1,4 @@
--- Define class
+--- Define class
 -- Represents a numeric const definition
 -- The following filds are stored:
 --   name = constant name

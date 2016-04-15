@@ -1,5 +1,7 @@
 /bin
 
+/doc/build
+
 lua
 luac
 

@@ -1,4 +1,4 @@
--- Operator class
+--- Operator class
 -- Represents an operator function or a class operator method.
 -- It stores the same fields as functions do plus:
 --  kind = set of character representing the operator (as it appers in C++ code)

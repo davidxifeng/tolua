@@ -1,12 +1,12 @@
+--- Container class
+-- Represents a container of features to be bound
+-- to lua.
+
 -- table to store namespaced typedefs/enums in global scope
 global_typedefs = {}
 global_enums = {}
 
--- Container class
--- Represents a container of features to be bound
--- to lua.
-classContainer = 
-{
+classContainer = {
  curr = nil,
 }
 classContainer.__index = classContainer
