@@ -6,7 +6,9 @@
 global_typedefs = {}
 global_enums = {}
 
-classContainer = { curr = nil, }
+classContainer = {
+  curr = nil, -- class static member -- 当前容器正在处理的对象 push pop函数控制
+}
 classContainer.__index = classContainer
 setmetatable(classContainer,classFeature)
 

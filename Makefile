@@ -9,6 +9,7 @@ all : tolua doc
 doc : doc/build/index.html
 
 serve_doc :
+	mkdir -p doc/build/logs
 	cd doc/build && nginx -p `pwd` -c ../nginx.conf
 
 stop_serve_doc :

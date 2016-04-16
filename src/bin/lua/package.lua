@@ -16,54 +16,68 @@ function classPackage:print ()
   end
 end
 
+
+--- 删除注释 inline public virtual 等不支持（无意义）的关键字
+-- 取出嵌入的Lua C 直译代码，预处理完之后再恢复
 function classPackage:preprocess ()
+  local code = self.code
+
   -- avoid preprocessing embedded Lua code
   local L = {}
-  self.code = gsub(self.code,"\n%s*%$%[","\1") -- deal with embedded C code
-  self.code = gsub(self.code,"\n%s*%$%]","\2")
-  self.code = gsub(self.code,"(%b\1\2)", function (c)
+  code = gsub(code,"\n%s*%$%[","\1") -- deal with embedded Lua code
+  code = gsub(code,"\n%s*%$%]","\2")
+  code = gsub(code,"(%b\1\2)", function (c)
     table.insert(L,c)
-    return "\n#["..getn(L).."]#"
+    return "\n#[".. #L .."]#"
   end)
+
   -- avoid preprocessing embedded C code
   local C = {}
-  self.code = gsub(self.code,"\n%s*%$%<","\3") -- deal with embedded C code
-  self.code = gsub(self.code,"\n%s*%$%>","\4")
-  self.code = gsub(self.code,"(%b\3\4)", function (c)
+  code = gsub(code,"\n%s*%$%<","\3") -- deal with embedded C code
+  code = gsub(code,"\n%s*%$%>","\4")
+  code = gsub(code,"(%b\3\4)", function (c)
     table.insert(C,c)
-    return "\n#<"..getn(C)..">#"
+    return "\n#<".. #C..">#"
   end)
 
   -- avoid preprocessing verbatim lines
   local V = {}
-  self.code = gsub(self.code,"\n(%s*%$[^%[%]][^\n]*)",function (v)
+  code = gsub(code,"\n(%s*%$[^%[%]][^\n]*)",function (v)
     table.insert(V,v)
-    return "\n#"..getn(V).."#"
+    return "\n#".. #V .."#"
   end)
+
   -- perform global substitution
-
-  self.code = gsub(self.code,"(//[^\n]*)","")     -- eliminate C++ comments
-  self.code = gsub(self.code,"/%*","\1")
-  self.code = gsub(self.code,"%*/","\2")
-  self.code = gsub(self.code,"%b\1\2","")
-  self.code = gsub(self.code,"\1","/%*")
-  self.code = gsub(self.code,"\2","%*/")
-  self.code = gsub(self.code,"%s*@%s*","@") -- eliminate spaces beside @
-  self.code = gsub(self.code,"%s?inline(%s)","%1") -- eliminate 'inline' keyword
-  self.code = gsub(self.code,"%s?extern(%s)","%1") -- eliminate 'extern' keyword
-  self.code = gsub(self.code,"%s?virtual(%s)","%1") -- eliminate 'virtual' keyword
-  self.code = gsub(self.code,"public:","") -- eliminate 'public:' keyword
-  self.code = gsub(self.code,"([^%w_])void%s*%*","%1_userdata ") -- substitute 'void*'
-  self.code = gsub(self.code,"([^%w_])void%s*%*","%1_userdata ") -- substitute 'void*'
-  self.code = gsub(self.code,"([^%w_])char%s*%*","%1_cstring ")  -- substitute 'char*'
-  self.code = gsub(self.code,"([^%w_])lua_State%s*%*","%1_lstate ")  -- substitute 'lua_State*'
+  code = gsub(code,"(//[^\n]*)","")     -- eliminate C++ comments
+  code = gsub(code,"/%*","\1")
+  code = gsub(code,"%*/","\2")
+  code = gsub(code,"%b\1\2","")
+  code = gsub(code,"\1","/%*")
+  code = gsub(code,"\2","%*/")
+  code = gsub(code,"%s*@%s*","@") -- eliminate spaces beside @
+  code = gsub(code,"%s?inline(%s)","%1") -- eliminate 'inline' keyword
+  -- capture index %1 -%9
+  code = gsub(code,"%s?extern(%s)","%1") -- eliminate 'extern' keyword
+  code = gsub(code,"%s?virtual(%s)","%1") -- eliminate 'virtual' keyword
+  code = gsub(code,"public%s*:","") -- eliminate 'public:' keyword
+  code = gsub(code,"private%s*:","") -- eliminate 'private:' keyword
+  code = gsub(code,"protected%s*:","") -- eliminate 'protected:' keyword
+  code = gsub(code,"([^%w_])void%s*%*","%1_userdata ") -- substitute 'void*'
+  code = gsub(code,"([^%w_])char%s*%*","%1_cstring ")  -- substitute 'char*'
+  code = gsub(code,"([^%w_])lua_State%s*%*","%1_lstate ")  -- substitute 'lua_State*'
+  -- FIX:
+  -- void* 重复的行
+  -- public: 支持空白
+  -- 增加 private protected，不过这个不删除也不影响后续的处理
 
   -- restore embedded code
-  self.code = gsub(self.code,"%#%[(%d+)%]%#",function (n) return L[tonumber(n)] end)
+  code = gsub(code,"%#%[(%d+)%]%#",function (n) return L[tonumber(n)] end)
   -- restore embedded code
-  self.code = gsub(self.code,"%#%<(%d+)%>%#",function (n) return C[tonumber(n)] end)
+  code = gsub(code,"%#%<(%d+)%>%#",function (n) return C[tonumber(n)] end)
   -- restore verbatim lines
-  self.code = gsub(self.code,"%#(%d+)%#",function (n) return V[tonumber(n)] end)
+  code = gsub(code,"%#(%d+)%#",function (n) return V[tonumber(n)] end)
+
+  self.code = code
 end
 
 -- translate verbatim
@@ -251,8 +265,8 @@ function Package (name,fn)
 
   local t = setmetatable(_Container {name=name, code=code}, classPackage)
   push(t)
-  t:preprocess()
-  t:parse(t.code)
+  t:preprocess() -- package 预处理
+  t:parse(t.code) -- container 解析
   pop()
   return t
 end
