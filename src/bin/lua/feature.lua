@@ -3,33 +3,33 @@
 classFeature = {}
 classFeature.__index = classFeature
 
--- write support code
+--- write support code
 function classFeature:supcode ()
 end
 
--- output tag
+--- output tag
 function classFeature:decltype ()
 end
 
--- register feature
+--- register feature
 function classFeature:register ()
 end
 
--- translate verbatim
+--- translate verbatim
 function classFeature:preamble ()
 end
 
--- check if it is a variable
+--- check if it is a variable
 function classFeature:isvariable ()
   return false
 end
 
--- check if it requires collection
+--- checi if it requires collection
 function classFeature:requirecollection (t)
   return false
 end
 
--- build names
+--- build names
 function classFeature:buildnames ()
   if self.name and self.name~='' then
     local n = split(self.name,'@')

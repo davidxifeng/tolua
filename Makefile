@@ -4,9 +4,15 @@ tolua_src = $(wildcard src/bin/lua/*.lua)
 
 all : tolua doc
 
-.PHONY : doc
+.PHONY : doc serve_doc stop_serve_doc
 
 doc : doc/build/index.html
+
+serve_doc :
+	cd doc/build && nginx -p `pwd` -c ../nginx.conf
+
+stop_serve_doc :
+	cd doc/build && nginx -p `pwd` -c ../nginx.conf -s quit
 
 doc/build/index.html : $(tolua_src)
 	ldoc -c doc/config.ld src/bin/lua
