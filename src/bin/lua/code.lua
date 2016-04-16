@@ -42,18 +42,10 @@ function classCode:print (ident,close)
   print(ident.."}"..close)
 end
 
-
---- Internal constructor
-function _Code (t)
-  setmetatable(t,classCode)
-  append(t)
-  return t
-end
-
 --- Constructor
 -- Expects a string representing the code text
 function Code (l)
-  return _Code {
-    text = l
-  }
+  local t = setmetatable({ text = l },classCode)
+  append(t)
+  return t
 end

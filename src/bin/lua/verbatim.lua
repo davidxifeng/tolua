@@ -50,9 +50,9 @@ end
 -- Constructor
 -- Expects a string representing the text line
 function Verbatim (l,cond)
-  if strsub(l,1,1) == '$' then
+  if l:sub(1,1) == '$' then
     cond = 'sr'       -- generates in both suport and register fragments
-    l = strsub(l,2)
+    l = l:sub(2)
   end
   return _Verbatim {
     line = l,

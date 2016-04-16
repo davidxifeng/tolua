@@ -18,7 +18,8 @@ end
 
 
 --- 删除注释 inline public virtual 等不支持（无意义）的关键字
--- 取出嵌入的Lua C 直译代码，预处理完之后再恢复
+-- 取出嵌入的Lua C 直译代码，
+-- 预处理完之后再还原嵌入的内容，使用特殊括号 \1-\2 \3-\4
 function classPackage:preprocess ()
   local code = self.code
 

@@ -1,5 +1,26 @@
 
 check_type = false
+show_log = true
+
+local ANSI_COLOR_RED    = '\x1b[31m'
+local ANSI_COLOR_GREEN  = '\x1b[32m'
+local ANSI_COLOR_YELLOW = '\x1b[33m'
+local ANSI_COLOR_BLUE   = '\x1b[34m'
+local ANSI_COLOR_RESET  = '\x1b[0m'
+
+function log (...)
+  if show_log then
+    print(ANSI_COLOR_YELLOW, ..., ANSI_COLOR_RESET)
+  end
+end
+
+function info (...)
+  print(ANSI_COLOR_GREEN, ..., ANSI_COLOR_RESET)
+end
+
+function fatal (...)
+  print(ANSI_COLOR_RED, ..., ANSI_COLOR_RESET)
+end
 
 dofile(path.."inspect.lua")
 

@@ -508,7 +508,7 @@ function classContainer:doparse (s)
   -- no matching
   if gsub(s,"%s%s*","") ~= "" then
     _curr_code = s
-    error("#parse error")
+    error("#parse error", s)
   else
     return ""
   end
