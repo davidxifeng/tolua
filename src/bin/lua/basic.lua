@@ -1,4 +1,4 @@
--- Basic C types and their corresponding Lua types
+--- Basic C types and their corresponding Lua types
 -- All occurrences of "char*" will be replaced by "_cstring",
 -- and all occurrences of "void*" will be replaced by "_userdata"
 _basic = {

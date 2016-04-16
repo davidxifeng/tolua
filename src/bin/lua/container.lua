@@ -1,86 +1,83 @@
 --- Container class
--- Represents a container of features to be bound
--- to lua.
+-- Represents a container of features to be bound to lua.
 
 -- table to store namespaced typedefs/enums in global scope
 global_typedefs = {}
 global_enums = {}
 
 classContainer = {
- curr = nil,
+  curr = nil,
 }
 classContainer.__index = classContainer
 setmetatable(classContainer,classFeature)
 
 -- output tags
 function classContainer:decltype ()
- push(self)
- local i=1
- while self[i] do
-  self[i]:decltype()
-  i = i+1
- end
- pop()
+  push(self)
+  local i=1
+  while self[i] do
+    self[i]:decltype()
+    i = i+1
+  end
+  pop()
 end
 
 
 -- write support code
 function classContainer:supcode ()
- push(self)
- local i=1
- while self[i] do
-  self[i]:supcode()
-  i = i+1
- end
- pop()
+  push(self)
+  local i=1
+  while self[i] do
+    self[i]:supcode()
+    i = i+1
+  end
+  pop()
 end
 
 function classContainer:hasvar ()
- local i=1
- while self[i] do
-  if self[i]:isvariable() then
-		 return 1
-		end
-  i = i+1
- end
-	return 0
+  local i=1
+  while self[i] do
+    if self[i]:isvariable() then return 1 end
+    i = i+1
+  end
+  return 0
 end
 
 -- Internal container constructor
 function _Container (self)
- setmetatable(self,classContainer)
- self.n = 0
- self.typedefs = {tolua_n=0}
- self.usertypes = {}
- self.enums = {tolua_n=0}
- self.lnames = {}
- return self
+  setmetatable(self,classContainer)
+  self.n = 0
+  self.typedefs = {tolua_n=0}
+  self.usertypes = {}
+  self.enums = {tolua_n=0}
+  self.lnames = {}
+  return self
 end
 
 -- push container
 function push (t)
-	t.prox = classContainer.curr
- classContainer.curr = t
+  t.prox = classContainer.curr
+  classContainer.curr = t
 end
 
 -- pop container
 function pop ()
---print("name",classContainer.curr.name)
---foreach(classContainer.curr.usertypes,print)
---print("______________")
- classContainer.curr = classContainer.curr.prox
+  --print("name",classContainer.curr.name)
+  --foreach(classContainer.curr.usertypes,print)
+  --print("______________")
+  classContainer.curr = classContainer.curr.prox
 end
 
 -- get current namespace
 function getcurrnamespace ()
-	return getnamespace(classContainer.curr) 
+  return getnamespace(classContainer.curr)
 end
 
 -- append to current container
 function append (t)
- return classContainer.curr:append(t)
+  return classContainer.curr:append(t)
 end
- 
+
 -- append typedef to current container
 function appendtypedef (t)
  return classContainer.curr:appendtypedef(t)
@@ -95,7 +92,7 @@ end
 function appendenum (t)
  return classContainer.curr:appendenum(t)
 end
- 
+
 -- substitute typedef
 function applytypedef (type)
  return classContainer.curr:applytypedef(type)
@@ -104,7 +101,7 @@ end
 -- check if is type
 function findtype (type)
  local t = classContainer.curr:findtype(type)
-	return t
+  return t
 end
 
 -- check if is typedef
@@ -115,140 +112,138 @@ end
 -- get fulltype (with namespace)
 function fulltype (t)
  local curr =  classContainer.curr
-	while curr do
-	 if curr then
-		 if curr.typedefs and curr.typedefs[t] then
-		  return curr.typedefs[t]
-		 elseif curr.usertypes and curr.usertypes[t] then
-		  return curr.usertypes[t]
-			end
-		end
-	 curr = curr.prox
-	end
-	return t
+  while curr do
+   if curr then
+     if curr.typedefs and curr.typedefs[t] then
+      return curr.typedefs[t]
+     elseif curr.usertypes and curr.usertypes[t] then
+      return curr.usertypes[t]
+      end
+    end
+   curr = curr.prox
+  end
+  return t
 end
 
 -- checks if it requires collection
 function classContainer:requirecollection (t)
- push(self)
- local i=1
-	local r = false
- while self[i] do
-  r = self[i]:requirecollection(t) or r
-  i = i+1
- end
-	pop()
-	return r
+  push(self)
+  local i=1
+  local r = false
+  while self[i] do
+    r = self[i]:requirecollection(t) or r
+    i = i+1
+  end
+  pop()
+  return r
 end
 
 
 -- get namesapce
 function getnamespace (curr)
-	local namespace = ''
-	while curr do
-	 if curr and 
-		   ( curr.classtype == 'class' or curr.classtype == 'namespace')
-		then
-		 namespace = curr.name .. '::' .. namespace 
-		end
-	 curr = curr.prox
-	end
-	return namespace
+  local namespace = ''
+  while curr do
+    if curr and ( curr.classtype == 'class' or curr.classtype == 'namespace') then
+      namespace = curr.name .. '::' .. namespace
+    end
+    curr = curr.prox
+  end
+  return namespace
 end
 
 -- get namespace (only namespace)
 function getonlynamespace ()
- local curr = classContainer.curr
-	local namespace = ''
-	while curr do
-		if curr.classtype == 'class' then
-		 return namespace 
-		elseif curr.classtype == 'namespace' then
-		 namespace = curr.name .. '::' .. namespace 
-		end
-	 curr = curr.prox
-	end
-	return namespace
+  local curr = classContainer.curr
+  local namespace = ''
+  while curr do
+    if curr.classtype == 'class' then
+      return namespace
+    elseif curr.classtype == 'namespace' then
+      namespace = curr.name .. '::' .. namespace
+    end
+    curr = curr.prox
+  end
+  return namespace
 end
 
 -- check if is enum
 function isenum (type)
- return classContainer.curr:isenum(type)
+  return classContainer.curr:isenum(type)
 end
 
 -- append feature to container
 function classContainer:append (t)
- self.n = self.n + 1
- self[self.n] = t
- t.parent = self
+  self.n = self.n + 1
+  self[self.n] = t
+  t.parent = self
 end
 
--- append typedef 
+-- append typedef
 function classContainer:appendtypedef (t)
- local namespace = getnamespace(classContainer.curr)
- self.typedefs.tolua_n = self.typedefs.tolua_n + 1
- self.typedefs[self.typedefs.tolua_n] = t
- self.typedefs[t.utype] = namespace .. t.utype
- global_typedefs[namespace..t.utype] = t
+  local namespace = getnamespace(classContainer.curr)
+  self.typedefs.tolua_n = self.typedefs.tolua_n + 1
+  self.typedefs[self.typedefs.tolua_n] = t
+  self.typedefs[t.utype] = namespace .. t.utype
+  global_typedefs[namespace..t.utype] = t
 end
 
 -- append usertype: return full type
 function classContainer:appendusertype (t)
- local container
-	if t == self.name then
-	 container = self.prox
-	else
-	 container = self
-	end
- local ft = getnamespace(container) .. t
-	container.usertypes[t] = ft
-	_usertype[ft] = ft
-	return ft
+  local container
+  if t == self.name then
+    container = self.prox
+  else
+    container = self
+  end
+  local ft = getnamespace(container) .. t
+  container.usertypes[t] = ft
+  _usertype[ft] = ft
+  return ft
 end
 
--- append enum 
+-- append enum
 function classContainer:appendenum (t)
- local namespace = getnamespace(classContainer.curr)
- self.enums.tolua_n = self.enums.tolua_n + 1
- self.enums[self.enums.tolua_n] = t
- global_enums[namespace..t.name] = t
+  local namespace = getnamespace(classContainer.curr)
+  self.enums.tolua_n = self.enums.tolua_n + 1
+  self.enums[self.enums.tolua_n] = t
+  global_enums[namespace..t.name] = t
 end
 
 -- determine lua function name overload
 function classContainer:overload (lname)
- if not self.lnames[lname] then 
-  self.lnames[lname] = 0
- else
-  self.lnames[lname] = self.lnames[lname] + 1
- end
- return format("%02d",self.lnames[lname])
+  if not self.lnames[lname] then
+    self.lnames[lname] = 0
+  else
+    self.lnames[lname] = self.lnames[lname] + 1
+  end
+  return format("%02d",self.lnames[lname])
 end
 
 -- applies typedef: returns the 'the facto' modifier and type
 function classContainer:applytypedef (type)
- if global_typedefs[type] then
-	local mod1, type1 = global_typedefs[type].mod, global_typedefs[type].type 
-	local mod2, type2 = applytypedef(type1)
-	return mod2 .. ' ' .. mod1, type2
- end
- local basetype = gsub(type,"^.*::","")
- local env = self
- while env do
-  if env.typedefs then
-   local i=1
-   while env.typedefs[i] do
-    if env.typedefs[i].utype == basetype then
-	    local mod1,type1 = env.typedefs[i].mod,env.typedefs[i].type
-     local mod2,type2 = applytypedef(type1)
-     return mod2..' '..mod1,type2
-	   end
-	  i = i+1
-   end
+  if global_typedefs[type] then
+    local mod1, type1 = global_typedefs[type].mod, global_typedefs[type].type
+    local mod2, type2 = applytypedef(type1)
+    return mod2 .. ' ' .. mod1, type2
   end
-  env = env.parent
- end
- return '',type
-end 
+  local basetype = gsub(type,"^.*::","")
+  local env = self
+  while env do
+    if env.typedefs then
+      local i=1
+      while env.typedefs[i] do
+        if env.typedefs[i].utype == basetype then
+          local mod1,type1 = env.typedefs[i].mod,env.typedefs[i].type
+          local mod2,type2 = applytypedef(type1)
+          return mod2..' '..mod1,type2
+        end
+        i = i+1
+      end
+    end
+    env = env.parent
+  end
+  return '',type
+end
 
 -- check if it is a typedef
 function classContainer:istypedef (type)
@@ -265,24 +260,24 @@ function classContainer:istypedef (type)
   end
   env = env.parent
  end
- return nil 
+ return nil
 end
 
 -- check if is a registered type: return full type or nil
 function classContainer:findtype (t)
  local curr =  self
-	while curr do
-		if curr.typedefs and curr.typedefs[t] then
-		 return curr.typedefs[t]
-		elseif curr.usertypes and curr.usertypes[t] then
-		 return curr.usertypes[t]
-		end
-	 curr = curr.prox
-	end
-	if _basic[t] then
-	 return t
-	end
-	return nil
+  while curr do
+    if curr.typedefs and curr.typedefs[t] then
+     return curr.typedefs[t]
+    elseif curr.usertypes and curr.usertypes[t] then
+     return curr.usertypes[t]
+    end
+   curr = curr.prox
+  end
+  if _basic[t] then
+   return t
+  end
+  return nil
 end
 
 
@@ -304,7 +299,7 @@ function classContainer:isenum (type)
   end
   env = env.parent
  end
- return false 
+ return false
 end
 
 -- parse chunk
@@ -316,18 +311,18 @@ function classContainer:doparse (s)
   if b then
    Code(strsub(code,2,-2))
    return strsub(s,e+1)
-  end 
- end 
+  end
+ end
 
  -- try C code
  do
   local b,e,code = strfind(s,"^%s*(%b\3\4)")
   if b then
-		 code = '{'..strsub(code,2,-2)..'\n}\n'
+     code = '{'..strsub(code,2,-2)..'\n}\n'
    Verbatim(code,'r')        -- verbatim code for 'r'egister fragment
    return strsub(s,e+1)
-  end 
- end 
+  end
+ end
 
  -- try verbatim
  do
@@ -335,8 +330,8 @@ function classContainer:doparse (s)
   if b then
    Verbatim(line)
    return strsub(s,e+1)
-  end 
- end 
+  end
+ end
 
 
  -- try module
@@ -388,14 +383,14 @@ function classContainer:doparse (s)
   end
  end
 
- -- try operator 
+ -- try operator
  do
   local b,e,decl,kind,arg,const = strfind(s,"^%s*([_%w][_%w%s%*&:]*operator)%s*([^%s][^%s]*)%s*(%b())%s*(c?o?n?s?t?)%s*;%s*")
   if not b then
-		 -- try inline
+     -- try inline
    b,e,decl,kind,arg,const = strfind(s,"^%s*([_%w][_%w%s%*&:]*operator)%s*([^%s][^%s]*)%s*(%b())%s*(c?o?n?s?t?)%s*%b{}%s*;?%s*")
-  end 
-		if b then
+  end
+    if b then
    _curr_code = strsub(s,b,e)
    Operator(decl,kind,arg,const)
    return strsub(s,e+1)
@@ -432,39 +427,39 @@ function classContainer:doparse (s)
 
  -- try class
  do
-	 local b,e,name,base,body
-		base = '' body = ''
-		b,e,name = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*;")  -- dummy class
-		if not b then
-			b,e,name = strfind(s,"^%s*struct%s*([_%w][_%w@]*)%s*;")    -- dummy struct
-			if not b then
-				b,e,name,base,body = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
-				if not b then
-					b,e,name,base,body = strfind(s,"^%s*struct%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
-					if not b then
-						b,e,name,base,body = strfind(s,"^%s*union%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
-						if not b then
-							base = ''
-							b,e,body,name = strfind(s,"^%s*typedef%s%s*struct%s*[_%w]*%s*(%b{})%s*([_%w][_%w@]*)%s*;%s*")
-						if not b then
-							base = ''
-								b,e,body,name = strfind(s,"^%s*typedef%s%s*union%s*[_%w]*%s*(%b{})%s*([_%w][_%w@]*)%s*;%s*")
-							end
-						end
-					end
-				end
-			end
-		end
-		if b then
-			if base ~= '' then 
-				local b,e
-				b,e,base = strfind(base,".-([_%w][_%w]*)$") 
-			end
-			_curr_code = strsub(s,b,e)
-			Class(name,base,body)
-			return strsub(s,e+1)
-		end
-	end
+   local b,e,name,base,body
+    base = '' body = ''
+    b,e,name = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*;")  -- dummy class
+    if not b then
+      b,e,name = strfind(s,"^%s*struct%s*([_%w][_%w@]*)%s*;")    -- dummy struct
+      if not b then
+        b,e,name,base,body = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
+        if not b then
+          b,e,name,base,body = strfind(s,"^%s*struct%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
+          if not b then
+            b,e,name,base,body = strfind(s,"^%s*union%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
+            if not b then
+              base = ''
+              b,e,body,name = strfind(s,"^%s*typedef%s%s*struct%s*[_%w]*%s*(%b{})%s*([_%w][_%w@]*)%s*;%s*")
+            if not b then
+              base = ''
+                b,e,body,name = strfind(s,"^%s*typedef%s%s*union%s*[_%w]*%s*(%b{})%s*([_%w][_%w@]*)%s*;%s*")
+              end
+            end
+          end
+        end
+      end
+    end
+    if b then
+      if base ~= '' then
+        local b,e
+        b,e,base = strfind(base,".-([_%w][_%w]*)$")
+      end
+      _curr_code = strsub(s,b,e)
+      Class(name,base,body)
+      return strsub(s,e+1)
+    end
+  end
 
  -- try typedef
  do
@@ -486,7 +481,7 @@ function classContainer:doparse (s)
   end
  end
 
-	-- try string
+  -- try string
  do
   local b,e,decl = strfind(s,"^%s*([_%w]?[_%s%w%d]-char%s+[_@%w%d]*%s*%[%s*%S+%s*%])%s*;%s*")
   if b then
@@ -521,5 +516,3 @@ function classContainer:parse (s)
   s = self:doparse(s)
  end
 end
-
-

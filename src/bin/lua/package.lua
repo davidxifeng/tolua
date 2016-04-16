@@ -247,6 +247,8 @@ function Package (name,fn)
     end)
   until nsubst==0
 
+  --io.open(name .. 'p_pkg.h', 'wb'):write(code)
+
   local t = setmetatable(_Container {name=name, code=code}, classPackage)
   push(t)
   t:preprocess()

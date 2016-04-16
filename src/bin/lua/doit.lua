@@ -1,4 +1,22 @@
 
+-- 类 继承图（部分）
+
+--                                                            -> classFeature
+--                                           classFunction    |
+--
+--                                           classVerbatim    |
+--
+--                                        -> classDeclaration |
+--                       classVariable |
+--
+--                                        -> classContainer   |
+--                        classPackage |
+--
+--                    ->  classModule  |
+--    classNamespace  |
+
+
+
 function doit ()
   -- define package name, if not provided
   if not flags.n then
@@ -9,41 +27,30 @@ function doit ()
     end
   end
 
-  -- proccess package
+  -- proccess package 解析
   local p = Package(flags.n,flags.f)
 
-  if flags.p then
-    return        -- only parse
-  end
+  -- only parse
+  if flags.p then return end
 
-  if flags.o then
-    local st,msg = writeto(flags.o)
-    if not st then
-      error('#'..msg)
-    end
-  end
+  -- 打开输出文件
+  if flags.o then assert(writeto(flags.o)) end
 
   p:decltype()
   if flags.P then
-    p:print()
+    p:print() -- 打印解析结果
   else
-    p:preamble()
-    p:supcode()
-    p:register()
+    p:preamble() -- preamble: 序言 开场白
+    p:supcode() -- support code
+    p:register() -- 注册函数
   end
-
-  if flags.o then
-    writeto()
-  end
+  if flags.o then writeto() end -- 关闭输出文件handle
 
   -- write header file
+  -- 额外输出头文件
   if not flags.P and flags.H then
-    local st,msg = writeto(flags.H)
-    if not st then
-      error('#'..msg)
-    end
+    assert(writeto(flags.H))
     p:header()
     writeto()
   end
 end
-

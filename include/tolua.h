@@ -6,10 +6,10 @@
 ** $Id: tolua.h,v 1.12 2011/01/13 13:43:45 fabraham Exp $
 */
 
-/* This code is free software; you can redistribute it and/or modify it. 
-** The software provided hereunder is on an "as is" basis, and 
+/* This code is free software; you can redistribute it and/or modify it.
+** The software provided hereunder is on an "as is" basis, and
 ** the author has no obligation to provide maintenance, support, updates,
-** enhancements, or modifications. 
+** enhancements, or modifications.
 */
 
 
@@ -47,6 +47,7 @@ typedef int tolua_multret;
 typedef int tolua_len;
 typedef int lua_Object;
 
+// tolua标记 takeownership
 #define tolua_own
 
 TOLUA_API const char* tolua_typename (lua_State* L, int lo);
@@ -58,22 +59,22 @@ TOLUA_API int tolua_isnumber (lua_State* L, int lo, int def, tolua_Error* err);
 TOLUA_API int tolua_isstring (lua_State* L, int lo, int def, tolua_Error* err);
 TOLUA_API int tolua_istable (lua_State* L, int lo, int def, tolua_Error* err);
 TOLUA_API int tolua_isusertable (lua_State* L, int lo, const char* type, int def, tolua_Error* err);
-TOLUA_API int tolua_isfunction (lua_State* L, int lo, int def, tolua_Error* err); 
+TOLUA_API int tolua_isfunction (lua_State* L, int lo, int def, tolua_Error* err);
 TOLUA_API int tolua_isuserdata (lua_State* L, int lo, int def, tolua_Error* err);
 TOLUA_API int tolua_isusertype (lua_State* L, int lo, const char* type, int def, tolua_Error* err);
-TOLUA_API int tolua_isvaluearray 
+TOLUA_API int tolua_isvaluearray
  (lua_State* L, int lo, int dim, int def, tolua_Error* err);
-TOLUA_API int tolua_isbooleanarray 
+TOLUA_API int tolua_isbooleanarray
  (lua_State* L, int lo, int dim, int def, tolua_Error* err);
-TOLUA_API int tolua_isnumberarray 
+TOLUA_API int tolua_isnumberarray
  (lua_State* L, int lo, int dim, int def, tolua_Error* err);
-TOLUA_API int tolua_isstringarray 
+TOLUA_API int tolua_isstringarray
  (lua_State* L, int lo, int dim, int def, tolua_Error* err);
-TOLUA_API int tolua_istablearray 
+TOLUA_API int tolua_istablearray
  (lua_State* L, int lo, int dim, int def, tolua_Error* err);
-TOLUA_API int tolua_isuserdataarray 
+TOLUA_API int tolua_isuserdataarray
  (lua_State* L, int lo, int dim, int def, tolua_Error* err);
-TOLUA_API int tolua_isusertypearray 
+TOLUA_API int tolua_isusertypearray
  (lua_State* L, int lo, const char* type, int dim, int def, tolua_Error* err);
 
 TOLUA_API void tolua_open (lua_State* L);
