@@ -10,19 +10,22 @@ local ANSI_COLOR_RESET  = '\x1b[0m'
 
 function log (...)
   if show_log then
-    print(ANSI_COLOR_YELLOW, ..., ANSI_COLOR_RESET)
+    print(ANSI_COLOR_YELLOW, ...)
+    print(ANSI_COLOR_RESET)
   end
 end
 
 function info (...)
   if show_log then
-    print(ANSI_COLOR_GREEN, ..., ANSI_COLOR_RESET)
+    print(ANSI_COLOR_GREEN, ...)
+    print(ANSI_COLOR_RESET)
   end
 end
 
 function fatal (...)
   if show_log then
-    print(ANSI_COLOR_RED, ..., ANSI_COLOR_RESET)
+    print(ANSI_COLOR_RED, ...)
+    print(ANSI_COLOR_RESET)
   end
 end
 

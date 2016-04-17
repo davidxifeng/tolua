@@ -26,34 +26,6 @@ getn = function(t)
 end
 
 -------------------------------------------------------------------
--- math library
-local math = math
-abs        = math.abs
-acos       = function (x) return math.deg(math.acos(x)) end
-asin       = function (x) return math.deg(math.asin(x)) end
-atan       = function (x) return math.deg(math.atan(x)) end
-atan2      = function (x,y) return math.deg(math.atan2(x,y)) end
-ceil       = math.ceil
-cos        = function (x) return math.cos(math.rad(x)) end
-deg        = math.deg
-exp        = math.exp
-floor      = math.floor
-frexp      = math.frexp
-ldexp      = math.ldexp
-log        = math.log
-log10      = math.log10
-max        = math.max
-min        = math.min
-mod        = math.mod
-PI         = math.pi
-rad        = math.rad
-random     = math.random
-randomseed = math.randomseed
-sin        = function (x) return math.sin(math.rad(x)) end
-sqrt       = math.sqrt
-tan        = function (x) return math.tan(math.rad(x)) end
-
--------------------------------------------------------------------
 -- string library
 local string = string
 strbyte   = string.byte

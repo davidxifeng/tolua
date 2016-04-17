@@ -2,20 +2,20 @@
 -- 类 继承图（部分）
 
 --  classFeature |
---               |--> classFunction
+--               |--> classFunction    |
+--               |                     |-> classOperator
 --               |--> classVerbatim
 --               |--> classCode
 --               |--> classDeclaration |
 --               |                     |-> classVariable
+--               |                     |-> classArray
 --               |
 --               |--> classContainer   |
 --               |                     |-> classClass
+--               |                     |-> classPackage
 --               |                     |-> classModule  -|
 --               |                     |                 |---> classNamespace
---               |                     |-> classPackage
 --
-
-
 
 function doit ()
   -- define package name, if not provided

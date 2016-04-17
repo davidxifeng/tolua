@@ -103,8 +103,7 @@ end
 
 -- check if is type
 function findtype (type)
-  local t = classContainer.curr:findtype(type)
-  return t
+  return classContainer.curr:findtype(type)
 end
 
 -- check if is typedef
@@ -174,7 +173,8 @@ function isenum (type)
   return classContainer.curr:isenum(type)
 end
 
--- append feature to container
+--- append feature to container
+-- 附加解析出的 feature到自己的子节点 addChild
 function classContainer:append (t)
   self.n = self.n + 1
   self[self.n] = t
@@ -330,7 +330,7 @@ function classContainer:doparse (s)
 
   -- try verbatim
   do
-    local b,e,line = strfind(s,"^%s*%$(.-\n)")
+    local b,e,line = strfind(s,"^%s*%$(.-\n)") -- '-' 0或多个任意字符，尽可能短
     if b then
       Verbatim(line)
       return strsub(s,e+1)

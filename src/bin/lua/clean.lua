@@ -1,3 +1,5 @@
+--- 检查Lua源码的语法；清理源码中的注释和多余的空白
+
 -- mark up comments and strings
 STR1 = "\001"
 STR2 = "\002"
@@ -32,9 +34,10 @@ function unmask (s)
  return s
 end
 
+--- clean api 成功返回处理过的源码，有语法错误返回nil
 function clean (s)
  -- check for compilation error
- local code = "return function () " .. s .. " end" 
+ local code = "return function () " .. s .. " end"
  if not dostring(code) then
   return nil
  end
@@ -46,7 +49,7 @@ function clean (s)
  -- remove blanks and comments
  while 1 do
   local b,e,d = strfind(s,ANY)
-  if b then 
+  if b then
    S = S..strsub(s,1,b-1)
    s = strsub(s,b+1)
    if d==STR1 or d==STR2 then
@@ -59,7 +62,7 @@ function clean (s)
     s = strsub(s,e+1)
    elseif d==REM then
     s = gsub(s,"[^\n]*(\n?)","%1",1)
-   end 
+   end
   else
    S = S..s
    break

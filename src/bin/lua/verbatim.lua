@@ -39,14 +39,6 @@ function classVerbatim:print (ident,close)
   print(ident.."}"..close)
 end
 
-
--- Internal constructor
-function _Verbatim (t)
-  setmetatable(t,classVerbatim)
-  append(t)
-  return t
-end
-
 -- Constructor
 -- Expects a string representing the text line
 function Verbatim (l,cond)
@@ -54,10 +46,9 @@ function Verbatim (l,cond)
     cond = 'sr'       -- generates in both suport and register fragments
     l = l:sub(2)
   end
-  return _Verbatim {
-    line = l,
-    cond = cond or '',
-  }
+  local t = setmetatable({ line = l, cond = cond or '', }, classVerbatim)
+  append(t)
+  return t
 end
 
 
