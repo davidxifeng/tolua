@@ -15,11 +15,15 @@ function log (...)
 end
 
 function info (...)
-  print(ANSI_COLOR_GREEN, ..., ANSI_COLOR_RESET)
+  if show_log then
+    print(ANSI_COLOR_GREEN, ..., ANSI_COLOR_RESET)
+  end
 end
 
 function fatal (...)
-  print(ANSI_COLOR_RED, ..., ANSI_COLOR_RESET)
+  if show_log then
+    print(ANSI_COLOR_RED, ..., ANSI_COLOR_RESET)
+  end
 end
 
 dofile(path.."inspect.lua")
