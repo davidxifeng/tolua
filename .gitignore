@@ -2,8 +2,8 @@
 
 /doc/build
 
-lua
-luac
+/lua-5.3.2/lua
+/lua-5.3.2/luac
 
 /tests/test
 
