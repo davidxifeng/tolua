@@ -340,9 +340,10 @@ function classContainer:doparse (s)
 
   -- try module
   do
+    -- module ModuleName { ModuleBody }
     local b,e,name,body = strfind(s,"^%s*module%s%s*([_%w][_%w]*)%s*(%b{})%s*")
     if b then
-      _curr_code = strsub(s,b,e)
+      _curr_code = strsub(s,b,e) -- 记录下当前正在处理的代码，报错时使用
       Module(name,body)
       return strsub(s,e+1)
     end
