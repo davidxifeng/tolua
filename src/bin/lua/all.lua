@@ -30,6 +30,7 @@ function fatal (...)
 end
 
 dofile(path.."inspect.lua")
+dofile(path.."etlua.lua")
 
 dofile(path.."compat.lua")
 dofile(path.."basic.lua")

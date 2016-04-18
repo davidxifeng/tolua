@@ -251,9 +251,9 @@ function classDeclaration:getarray (narg)
       local def; if self.def~='' then def=1 else def=0 end
       local t = isbasic(type)
       if (t) then
-      output('   if (!tolua_is'..t..'array(tolua_S,',narg,',',self.dim,',',def,',&tolua_err))')
+        output('   if (!tolua_is'..t..'array(tolua_S,',narg,',',self.dim,',',def,',&tolua_err))')
       else
-      output('   if (!tolua_isusertypearray(tolua_S,',narg,',"',type,'",',self.dim,',',def,',&tolua_err))')
+        output('   if (!tolua_isusertypearray(tolua_S,',narg,',"',type,'",',self.dim,',',def,',&tolua_err))')
       end
       output('    goto tolua_lerror;')
       output('   else\n')
@@ -269,16 +269,16 @@ function classDeclaration:getarray (narg)
     if not t and ptr=='' then output('*') end
     output('((',type)
     if not t then
-    output('*')
+      output('*')
     end
     output(') ')
     local def = 0
     if self.def ~= '' then def = self.def end
     if t then
-    if t=='function' then t='value' end
-    output('tolua_tofield'..t..'(tolua_S,',narg,',i+1,',def,'));')
+      if t=='function' then t='value' end
+      output('tolua_tofield'..t..'(tolua_S,',narg,',i+1,',def,'));')
     else
-    output('tolua_tofieldusertype(tolua_S,',narg,',i+1,',def,'));')
+      output('tolua_tofieldusertype(tolua_S,',narg,',i+1,',def,'));')
     end
     output('   }')
     output('  }')
