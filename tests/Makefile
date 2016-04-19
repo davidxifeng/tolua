@@ -21,10 +21,6 @@ test : main.o
 main.o : main.c
 	gcc $(cflags) -I../lua-5.3.2 -I../include -o $@ $^
 
-clean :
-	rm -f *.o
-	rm -f test
-
 array_gen.c : array.pkg
 	../bin/tolua -o array_gen.c array.pkg
 
@@ -33,4 +29,9 @@ array_gen.o : array_gen.c
 
 array.so : array_gen.o
 	gcc -shared -o $@ $<
+
+clean :
+	rm -f *.o
+	rm -f test
+	rm -f array.so array_gen.c array_gen.o
 

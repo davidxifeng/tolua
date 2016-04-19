@@ -127,8 +127,70 @@ static int <%= cname %> (lua_State* tolua_S) {
   elseif static then
     _,_,self.mod = strfind(self.mod,'^%s*static%s%s*(.*)')
   end
-  -- declare parameters
+
   if self.args[1].type ~= 'void' then
+
+    local d_order = {}
+    do
+      local function elem(tb, e)
+        for i, v in ipairs(tb) do
+          if v == e then
+            return true
+          end
+        end
+        return false
+      end
+
+      local i = 1
+      local names, array_dims = {}, {}
+      local need_swap = false
+      while self.args[i] and self.args[i].type ~= '...' do
+        local arg = self.args[i]
+        if arg.dim == '' then
+          table.insert(names, self.args[i].name)
+        elseif tonumber(arg.dim) == nil then
+          if not elem(names, arg.dim) then
+            table.insert(array_dims, {dim = arg.dim, idx = i})
+            need_swap = true
+          end
+        end
+
+        table.insert(d_order, i)
+
+        i = i + 1
+      end
+
+      if need_swap then
+        for _, v in ipairs(array_dims) do
+          if elem(names, v.dim) then
+            d_order[v.idx] = true
+            table.insert(d_order, v.idx)
+          end
+        end
+
+        local i = 1
+        local len = # d_order
+        while i <= len do
+          if d_order[i] == true then
+            table.remove(d_order, i)
+            len = len - 1
+          else
+            i = i + 1
+          end
+        end
+      end
+    end
+
+    -- declare parameters
+    local of = narg - 1
+    for _, v in ipairs(d_order) do
+      if isbasic(self.args[v].type) ~= "state" then
+        -- FIXME fix arg type state
+      end
+      self.args[v]:declare(of + v)
+    end
+
+    --[[
     local i=1
     while self.args[i] and self.args[i].type ~= "..." do
       self.args[i]:declare(narg)
@@ -137,7 +199,9 @@ static int <%= cname %> (lua_State* tolua_S) {
       end
       i = i+1
     end
+    --]]
   end
+
 
   -- check self
   if check_type then
