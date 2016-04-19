@@ -4,7 +4,7 @@ PLAT= none
 
 default : $(PLAT)
 
-all : test
+all : test array.so
 
 none :
 	@echo 'make linux or macosx'
@@ -24,3 +24,13 @@ main.o : main.c
 clean :
 	rm -f *.o
 	rm -f test
+
+array_gen.c : array.pkg
+	../bin/tolua -o array_gen.c array.pkg
+
+array_gen.o : array_gen.c
+	gcc $(cflags) -fPIC -I../lua-5.3.2 -I../include -o $@ $^
+
+array.so : array_gen.o
+	gcc -shared -o $@ $<
+

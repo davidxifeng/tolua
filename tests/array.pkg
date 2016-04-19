@@ -1,0 +1,13 @@
+
+module array {
+void f(int n, int a[n]);
+}
+
+$#include <stdio.h>
+$
+$void f(int n, int *a) {
+$  printf("info: %p %d\n", a, n);
+$  for (int i = 0; i < n; i++) {
+$    printf("a[i]: %d\n", a[i]);
+$  }
+$}

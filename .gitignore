@@ -6,6 +6,7 @@
 /lua-5.3.2/luac
 
 /tests/test
+/tests/*gen.c
 
 /src/tests/tarray
 /src/tests/tarraybind.c
